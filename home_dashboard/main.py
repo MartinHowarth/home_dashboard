@@ -3,6 +3,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import importlib
+import json
 import os
 import sys
 
@@ -22,6 +23,10 @@ def load_config_from_file() -> HomeDashboard:
     config_module = importlib.import_module(config_file)
 
     return HomeDashboard(config_module.config)
+
+
+def load_config_from_env() -> HomeDashboard:
+    return HomeDashboard(json.loads(os.environ['ALL_CONFIG']))
 
 
 def create_app_layout(_config: HomeDashboard):
@@ -47,7 +52,7 @@ def create_app_layout(_config: HomeDashboard):
     return regenerate_layout
 
 
-def create_app_callbacks(_config):
+def create_app_callbacks(app, _config):
     @app.callback(Output('update-bus-train', 'children'),
                   [Input('slow-interval', 'n_intervals')])
     def update_train_bus_row(n):
@@ -67,15 +72,22 @@ def create_app_callbacks(_config):
         return [birthday.generate_upcoming_birthdays_div(_config.birthdays)]
 
 
-if __name__ == "__main__":
-    config = load_config_from_file()
+def main():
+    try:
+        config = load_config_from_env()
+    except KeyError:
+        config = load_config_from_file()
 
     bus.download_bus_stop_info()
 
     app = dash.Dash(__name__)
     app.layout = create_app_layout(config)
-    create_app_callbacks(config)
+    create_app_callbacks(app, config)
 
     # Use Minty CSS
     app.css.append_css({"external_url": CSS_DICT['minty']})
     app.run_server(debug=True)
+
+
+if __name__ == "__main__":
+    main()

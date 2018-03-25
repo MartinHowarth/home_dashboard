@@ -45,11 +45,4 @@ setup(
         'requests',
         'schematics',
     ],
-
-    entry_points={
-        'console_scripts': [
-            'sample=sample:main',
-        ],
-    },
 )
-
