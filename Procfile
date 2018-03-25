@@ -1,1 +1,1 @@
-web: gunicorn -w 4 home_dashboard:app
+web: gunicorn -w 4 home_dashboard:server

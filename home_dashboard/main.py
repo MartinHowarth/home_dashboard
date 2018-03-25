@@ -8,6 +8,7 @@ import os
 import sys
 
 from dash.dependencies import Input, Output
+from flask import Flask
 
 from home_dashboard import bus, birthday, train, clock
 from home_dashboard.config_model import HomeDashboard
@@ -79,8 +80,10 @@ except KeyError:
 
 bus.download_bus_stop_info()
 
-app = dash.Dash(__name__)
-app.secret_key = os.environ.get('secret_key', 'secret')
+server = Flask(__name__)
+server.secret_key = os.environ.get('secret_key', 'secret')
+
+app = dash.Dash(name=__name__, server=server)
 app.layout = create_app_layout(config)
 create_app_callbacks(app, config)
 
