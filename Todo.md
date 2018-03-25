@@ -1,0 +1,3 @@
+- Auto populate special public dates
+    - Mothers/Fathers day
+    - Bank holidays
