@@ -86,7 +86,7 @@ def main():
 
     # Use Minty CSS
     app.css.append_css({"external_url": CSS_DICT['minty']})
-    app.run_server(threaded=True, port=80)
+    app.run_server(threaded=True, port=os.environ.get('PORT', 80))
 
 
 if __name__ == "__main__":
