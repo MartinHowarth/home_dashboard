@@ -39,7 +39,7 @@ def _generate_birthday_row(birthday):
             html.Td(birthday.date),
             html.Td(days_to_next_date(birthday.date) if not is_today else "TODAY!")
         ],
-        className="table-default" if not is_today else "table-Success"
+        className="table-default" if not is_today else "table-success"
     )
 
 
