@@ -6,6 +6,7 @@ from .config_model import Birthday
 from datetime import date
 
 MAX_DAYS_TO_BIRTHDAY = 28
+WARNING_DAYS = 7
 
 
 def days_to_next_date(target_date: date) -> int:
@@ -33,13 +34,19 @@ def generate_upcoming_birthdays_header():
 def _generate_birthday_row(birthday):
     is_today = days_to_next_date(birthday.date) == 0
 
+    class_name = "table-default"
+    if is_today:
+        class_name = "table-success"
+    elif days_to_next_date(birthday.date) < WARNING_DAYS:
+        class_name = "table-warning"
+
     return html.Tr(
         [
             html.Td(birthday.name),
             html.Td(birthday.date),
             html.Td(days_to_next_date(birthday.date) if not is_today else "TODAY!")
         ],
-        className="table-default" if not is_today else "table-success"
+        className=class_name
     )
 
 
