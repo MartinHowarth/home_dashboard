@@ -72,18 +72,19 @@ def create_app_callbacks(app, _config):
         return [birthday.generate_upcoming_birthdays_div(_config.birthdays)]
 
 
+try:
+    config = load_config_from_env()
+except KeyError:
+    config = load_config_from_file()
+
+bus.download_bus_stop_info()
+
+app = dash.Dash(__name__)
+app.layout = create_app_layout(config)
+create_app_callbacks(app, config)
+
+# Use Minty CSS
+app.css.append_css({"external_url": CSS_DICT['minty']})
+
 if __name__ == "__main__":
-    try:
-        config = load_config_from_env()
-    except KeyError:
-        config = load_config_from_file()
-
-    bus.download_bus_stop_info()
-
-    app = dash.Dash(__name__)
-    app.layout = create_app_layout(config)
-    create_app_callbacks(app, config)
-
-    # Use Minty CSS
-    app.css.append_css({"external_url": CSS_DICT['minty']})
     app.run_server(threaded=True, port=int(os.environ.get('PORT', 80)))
