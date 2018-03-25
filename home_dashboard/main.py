@@ -80,6 +80,7 @@ except KeyError:
 bus.download_bus_stop_info()
 
 app = dash.Dash(__name__)
+app.secret_key = os.environ.get('secret_key', 'secret')
 app.layout = create_app_layout(config)
 create_app_callbacks(app, config)
 
