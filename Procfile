@@ -1,1 +1,1 @@
-web: python home_dashboard/main.py
+web: gunicorn -w 4 home_dashboard:app
