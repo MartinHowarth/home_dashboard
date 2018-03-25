@@ -64,5 +64,4 @@ def generate_upcoming_birthdays_div(birthdays):
             generate_upcoming_birthdays_header(),
             generate_upcoming_birthdays_table(birthdays)
         ],
-        # className="col-lg-6"
     )

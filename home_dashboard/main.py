@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import dash
+import dash_core_components as dcc
 import dash_html_components as html
 import importlib
 import os
 import sys
 
-from home_dashboard import bus, birthday, train
+from dash.dependencies import Input, Output
 
+from home_dashboard import bus, birthday, train, clock
 from home_dashboard.config_model import HomeDashboard
 
 CSS_DICT = {
@@ -23,23 +25,46 @@ def load_config_from_file() -> HomeDashboard:
 
 
 def create_app_layout(_config: HomeDashboard):
-    train_bus_row = html.Div(
-        children=[
-            bus.generate_bus_arrivals_div(_config.bus),
-            train.generate_train_departures_div(_config.train),
-        ],
-        className="row"
-    )
-
     def regenerate_layout():
         return html.Div(
             children=[
-                train_bus_row,
-                birthday.generate_upcoming_birthdays_div(_config.birthdays),
+                html.Div(id='update-clock'),
+                html.Div(id='update-bus-train', className="row"),
+                html.Div(id='update-birthdays'),
+                dcc.Interval(
+                    id='fast-interval',
+                    interval=500,  # in milliseconds
+                    n_intervals=0
+                ),
+                dcc.Interval(
+                    id='slow-interval',
+                    interval=30 * 1000,  # in milliseconds
+                    n_intervals=0
+                ),
             ],
-            className="container"
+            className="container",
         )
     return regenerate_layout
+
+
+def create_app_callbacks(_config):
+    @app.callback(Output('update-bus-train', 'children'),
+                  [Input('slow-interval', 'n_intervals')])
+    def update_train_bus_row(n):
+        return [
+            bus.generate_bus_arrivals_div(_config.bus),
+            train.generate_train_departures_div(_config.train),
+        ]
+
+    @app.callback(Output('update-clock', 'children'),
+                  [Input('fast-interval', 'n_intervals')])
+    def update_clock(n):
+        return [clock.generate_clock_div()]
+
+    @app.callback(Output('update-birthdays', 'children'),
+                  [Input('slow-interval', 'n_intervals')])
+    def update_birthdays(n):
+        return [birthday.generate_upcoming_birthdays_div(_config.birthdays)]
 
 
 if __name__ == "__main__":
@@ -47,8 +72,9 @@ if __name__ == "__main__":
 
     bus.download_bus_stop_info()
 
-    app = dash.Dash()
+    app = dash.Dash(__name__)
     app.layout = create_app_layout(config)
+    create_app_callbacks(config)
 
     # Use Minty CSS
     app.css.append_css({"external_url": CSS_DICT['minty']})
