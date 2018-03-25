@@ -10,7 +10,7 @@ import sys
 from dash.dependencies import Input, Output
 from flask import Flask
 
-from home_dashboard import bus, birthday, train, clock
+from home_dashboard import bus, birthday, train, clock, weather
 from home_dashboard.config_model import HomeDashboard
 
 CSS_DICT = {
@@ -37,6 +37,9 @@ def create_app_layout(_config: HomeDashboard):
                 html.Div(id='update-clock'),
                 html.Div(id='update-bus-train', className="row"),
                 html.Div(id='update-birthdays'),
+                html.Img(id='update-weather', style={'display': 'inline-block',
+                                                     'width': '20%',
+                                                     'vertical-align': 'middle'}),
                 dcc.Interval(
                     id='fast-interval',
                     interval=500,  # in milliseconds
@@ -45,6 +48,11 @@ def create_app_layout(_config: HomeDashboard):
                 dcc.Interval(
                     id='slow-interval',
                     interval=30 * 1000,  # in milliseconds
+                    n_intervals=0
+                ),
+                dcc.Interval(
+                    id='really-slow-interval',
+                    interval=60 * 60 * 1000,  # in milliseconds
                     n_intervals=0
                 ),
             ],
@@ -68,9 +76,22 @@ def create_app_callbacks(app, _config):
         return [clock.generate_clock_div()]
 
     @app.callback(Output('update-birthdays', 'children'),
-                  [Input('slow-interval', 'n_intervals')])
+                  [Input('really-slow-interval', 'n_intervals')])
     def update_birthdays(n):
         return [birthday.generate_upcoming_birthdays_div(_config.birthdays)]
+
+    @app.callback(Output('update-weather', 'src'),
+                  [Input('really-slow-interval', 'n_intervals')])
+    def update_weather(n):
+        return weather.get_weather_icon_url(_config.weather)
+
+    all_updates = [
+        update_train_bus_row,
+        update_clock,
+        update_birthdays,
+        update_weather,
+    ]
+    return all_updates
 
 
 try:
@@ -85,10 +106,11 @@ server.secret_key = os.environ.get('secret_key', 'secret')
 
 app = dash.Dash(name=__name__, server=server)
 app.layout = create_app_layout(config)
-create_app_callbacks(app, config)
+all_updates = create_app_callbacks(app, config)
+[update(0) for update in all_updates]
 
 # Use Minty CSS
 app.css.append_css({"external_url": CSS_DICT['minty']})
 
 if __name__ == "__main__":
-    app.run_server(threaded=True, port=int(os.environ.get('PORT', 80)))
+    app.run_server(threaded=True, port=int(os.environ.get('PORT', 80)), debug=True)
