@@ -1,6 +1,7 @@
 import dash_html_components as html
 
 from .api import get_station_board
+from .config_model import TrainWidget
 
 
 def generate_train_departures_header(station_board):
@@ -24,7 +25,7 @@ def _generate_service_row(service):
         )
 
 
-def generate_train_departures_table(station_board):
+def generate_train_departures_table(train_services):
     headers = ('Destination', 'Scheduled', 'Estimated')
 
     return html.Table(
@@ -32,18 +33,21 @@ def generate_train_departures_table(station_board):
         [html.Tr([html.Th(col) for col in headers])] +
 
         # Body
-        [_generate_service_row(serv) for serv in station_board.train_services],
+        [_generate_service_row(serv) for serv in train_services],
         className="table table-condensed"
     )
 
 
-def generate_train_departures_div(config):
+def generate_train_departures_div(config: TrainWidget):
     board = get_station_board(config.train_station_code, config.nre_api_key)
+
+    train_services = board.train_services
+    train_services = train_services[:config.max_listings]
 
     return html.Div(
         children=[
             generate_train_departures_header(board),
-            generate_train_departures_table(board)
+            generate_train_departures_table(train_services)
         ],
         className="col-lg-6"
     )

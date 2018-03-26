@@ -1,7 +1,6 @@
 import dash_html_components as html
 
-from typing import List
-from .config_model import Birthday
+from .config_model import BirthdayWidget
 
 from datetime import date
 
@@ -23,7 +22,7 @@ def days_to_next_date(target_date: date) -> int:
     return days_to_go
 
 
-def is_soon_enough(birthday: Birthday) -> bool:
+def is_soon_enough(birthday: BirthdayWidget) -> bool:
     return days_to_next_date(birthday.date) < MAX_DAYS_TO_BIRTHDAY
 
 
@@ -31,7 +30,7 @@ def generate_upcoming_birthdays_header():
     return html.H3(children='Upcoming Birthdays')
 
 
-def _generate_birthday_row(birthday):
+def _generate_birthday_row(birthday: BirthdayWidget):
     is_today = days_to_next_date(birthday.date) == 0
 
     class_name = "table-default"
@@ -50,10 +49,11 @@ def _generate_birthday_row(birthday):
     )
 
 
-def generate_upcoming_birthdays_table(birthdays: List[Birthday]):
+def generate_upcoming_birthdays_table(config: BirthdayWidget):
     headers = ('Name', 'Date', 'Days')
 
-    ordered_birthdays = sorted(birthdays, key=lambda x: days_to_next_date(x.date))
+    ordered_birthdays = sorted(config.birthdays, key=lambda x: days_to_next_date(x.date))
+    ordered_birthdays = ordered_birthdays[:config.max_listings]
 
     return html.Table(
         # Header
@@ -65,10 +65,10 @@ def generate_upcoming_birthdays_table(birthdays: List[Birthday]):
     )
 
 
-def generate_upcoming_birthdays_div(birthdays):
+def generate_upcoming_birthdays_div(config):
     return html.Div(
         children=[
             generate_upcoming_birthdays_header(),
-            generate_upcoming_birthdays_table(birthdays)
+            generate_upcoming_birthdays_table(config)
         ],
     )
