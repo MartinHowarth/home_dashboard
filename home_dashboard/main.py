@@ -122,7 +122,12 @@ app.layout = create_app_layout(config)
 
 # Force all updates immediately so we don't have to wait for the timer(s) to pop.
 all_updates = create_app_callbacks(app, config)
-[update(0) for update in all_updates]
+try:
+    # This can fail due to various API errors. During callbacks this is handled nicely,
+    # but on initial start we have to catch it ourselves.
+    [update(0) for update in all_updates]
+except Exception as err:
+    log.exception("Exception on initial updates: {}".format(err))
 
 # Use Minty CSS
 app.css.append_css({"external_url": CSS_DICT['minty']})
