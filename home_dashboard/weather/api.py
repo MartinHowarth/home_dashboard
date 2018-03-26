@@ -25,7 +25,7 @@ def filter_to_current_day(forecast_list):
 
 
 def is_significant_rain(forecast_list):
-    rain_mm = sum((float(fc['rain'].get('3h', 0)) for fc in forecast_list))
+    rain_mm = sum((float(fc.get('rain', {}).get('3h', 0)) for fc in forecast_list))
     return rain_mm > RAIN_MM_THRESHOLD
 
 
