@@ -11,9 +11,9 @@ def generate_bus_arrivals_header(bus_stop_name):
 def _generate_bus_arrival_row(config, arrival):
     body_element_keys = ('lineName', 'towards', 'minutesToStation')
 
-    if arrival['minutesToStation'] < config.run_minutes_to_stop:
+    if arrival['minutesToStation'] <= config.run_minutes_to_stop:
         class_name = "table-warning"
-    elif arrival['minutesToStation'] < config.walk_minutes_to_stop:
+    elif arrival['minutesToStation'] <= config.walk_minutes_to_stop:
         class_name = "table-success"
     else:
         class_name = "table-default"
