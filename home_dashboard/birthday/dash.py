@@ -42,7 +42,7 @@ def _generate_birthday_row(birthday: BirthdayWidget):
     return html.Tr(
         [
             html.Td(birthday.name),
-            html.Td(birthday.date),
+            html.Td(birthday.date.strftime("%d %B")),
             html.Td(days_to_next_date(birthday.date) if not is_today else "TODAY!")
         ],
         className=class_name
