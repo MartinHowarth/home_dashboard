@@ -49,5 +49,4 @@ def generate_train_departures_div(config: TrainWidget):
             generate_train_departures_header(board),
             generate_train_departures_table(train_services)
         ],
-        className="col-lg-6"
     )

@@ -1,1 +1,1 @@
-from .api import get_weather_icon_url
+from .dash import generate_weather_div

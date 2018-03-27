@@ -11,7 +11,7 @@ import sys
 from dash.dependencies import Input, Output
 from flask import Flask
 
-from home_dashboard import bus, birthday, train, clock, weather
+from home_dashboard import bus, birthday, train, clock, weather, wifi, bootstrap
 from home_dashboard.config_model import HomeDashboard
 
 CSS_DICT = {
@@ -50,11 +50,17 @@ def create_app_layout(_config: HomeDashboard):
         return html.Div(
             children=[
                 html.Div(id='update-clock'),
-                html.Div(id='update-bus-train', className="row"),
-                html.Div(id='update-birthdays'),
-                html.Img(id='update-weather', style={'display': 'inline-block',
-                                                     'width': '20%',
-                                                     'vertical-align': 'middle'}),
+                bootstrap.layouts.create_equal_row([
+                    html.Div(id='update-bus'),
+                    html.Div(id='update-train'),
+                ]),
+                bootstrap.layouts.create_equal_row([
+                    html.Div(id='update-birthdays'),
+                    bootstrap.layouts.create_equal_row([
+                        html.Div(id='update-weather'),
+                        wifi.generate_wifi_div(_config.wifi),
+                    ]),
+                ]),
                 dcc.Interval(
                     id='fast-interval',
                     interval=500,  # in milliseconds
@@ -75,13 +81,15 @@ def create_app_layout(_config: HomeDashboard):
 
 
 def create_app_callbacks(_app, _config):
-    @_app.callback(Output('update-bus-train', 'children'),
+    @_app.callback(Output('update-bus', 'children'),
                    [Input('slow-interval', 'n_intervals')])
-    def update_train_bus_row(n):
-        return [
-            bus.generate_bus_arrivals_div(_config.bus),
-            train.generate_train_departures_div(_config.train),
-        ]
+    def update_bus_row(n):
+        return [bus.generate_bus_arrivals_div(_config.bus)]
+
+    @_app.callback(Output('update-train', 'children'),
+                   [Input('slow-interval', 'n_intervals')])
+    def update_train_row(n):
+        return [train.generate_train_departures_div(_config.train)]
 
     @_app.callback(Output('update-clock', 'children'),
                    [Input('fast-interval', 'n_intervals')])
@@ -93,15 +101,16 @@ def create_app_callbacks(_app, _config):
     def update_birthdays(n):
         return [birthday.generate_upcoming_birthdays_div(_config.birthday)]
 
-    @_app.callback(Output('update-weather', 'src'),
+    @_app.callback(Output('update-weather', 'children'),
                    [Input('really-slow-interval', 'n_intervals')])
     def update_weather(n):
-        return weather.get_weather_icon_url(_config.weather)
+        return [weather.generate_weather_div(_config.weather)]
 
     _all_updates = [
-        update_train_bus_row,
-        update_clock,
         update_birthdays,
+        update_bus_row,
+        update_clock,
+        update_train_row,
         update_weather,
     ]
     return _all_updates
@@ -113,6 +122,7 @@ except KeyError:
     config = load_config_from_file()
 
 bus.download_bus_stop_info()
+wifi.generate_wifi_qr_code(config.wifi)
 
 server = Flask(__name__)
 server.secret_key = os.environ.get('secret_key', 'secret')

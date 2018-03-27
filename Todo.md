@@ -1,8 +1,4 @@
 - Auto populate special public dates
     - Mothers/Fathers day
     - Bank holidays
-- Background based on weather
-    - 50% chance to rain -> rainy background
-    - otherwise sun
-    - maybe bother with cloud (but it's england...)
 - Embed the clock instead of polling all the time

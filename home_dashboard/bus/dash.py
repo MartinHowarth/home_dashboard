@@ -48,5 +48,4 @@ def generate_bus_arrivals_div(config: BusWidget):
             generate_bus_arrivals_header(bus_stop_name),
             generate_bus_arrivals_table(config, arrivals)
         ],
-        className="col-lg-6"
     )
