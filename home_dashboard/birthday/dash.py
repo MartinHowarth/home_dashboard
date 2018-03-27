@@ -36,8 +36,8 @@ def _generate_birthday_row(birthday: BirthdayWidget):
     class_name = "table-default"
     if is_today:
         class_name = "table-success"
-    elif days_to_next_date(birthday.date) < WARNING_DAYS:
-        class_name = "table-warning"
+    elif days_to_next_date(birthday.date) <= WARNING_DAYS:
+        class_name = "table-primary"
 
     return html.Tr(
         [
