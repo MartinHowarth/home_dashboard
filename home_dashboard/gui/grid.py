@@ -4,22 +4,16 @@ import dash_html_components as html
 def create_equal_grid(elements):
     """
 
-    :param elements: List of rows, of which each is a list of columns
-        Rows must be of equal length.
+    :param elements: List of rows, of which each is a list of columns.
         Each element of a row must be a html.Div.
     :return:
     """
-    n_columns = len(elements[0])
-
-    if not all([len(row) == n_columns for row in elements]):
-        raise ValueError("Not all rows are of the same length.")
-
-    # Bootstrap allows a maximum of 12 columns per grid.
-    column_class = 'col-sm-{}'.format(int(12 / n_columns))
-
     grid_children = []
     for row in elements:
         row_children = []
+
+        # Bootstrap allows a maximum of 12 columns per row.
+        column_class = 'col-sm-{}'.format(int(12 / len(row)))
         for col in row:
             if hasattr(col, 'className'):
                 col.className += ' {}'.format(column_class)

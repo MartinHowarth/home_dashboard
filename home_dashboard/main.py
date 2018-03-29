@@ -11,8 +11,8 @@ import sys
 from dash.dependencies import Input, Output
 from flask import Flask
 
-from home_dashboard.config_model import HomeDashboard
-from home_dashboard.html_toolkit import layouts
+from home_dashboard.gui.dash import generate_layout
+from home_dashboard.config_model import HomeDashboardModel
 from home_dashboard.widgets import weather, train, clock, bus, birthday, wifi
 
 
@@ -30,50 +30,71 @@ def configure_logging():
     root.addHandler(ch)
 
 
-def load_config_from_file() -> HomeDashboard:
+def load_config_from_file() -> HomeDashboardModel:
     # Strip the .py extension
     config_file = os.path.splitext(sys.argv[1])[0]
     config_module = importlib.import_module(config_file)
 
-    return HomeDashboard(config_module.config)
+    return HomeDashboardModel(config_module.config)
 
 
-def load_config_from_env() -> HomeDashboard:
-    return HomeDashboard(json.loads(os.environ['ALL_CONFIG']))
+def load_config_from_env() -> HomeDashboardModel:
+    return HomeDashboardModel(json.loads(os.environ['ALL_CONFIG']))
 
 
-def create_app_layout(_config: HomeDashboard):
-    def regenerate_layout():
-        return html.Div(
-            children=[
-                html.Div(id='update-clock'),
-                layouts.create_equal_row([
-                    html.Div(id='update-bus'),
-                    html.Div(id='update-train'),
-                ]),
-                layouts.create_equal_row([
-                    html.Div(id='update-birthdays'),
-                    layouts.create_equal_row([
-                        html.Div(id='update-weather'),
-                        wifi.generate_wifi_div(_config.wifi),
-                    ]),
-                ]),
-                dcc.Interval(
-                    id='fast-interval',
-                    interval=500,  # in milliseconds
-                    n_intervals=0
-                ),
-                dcc.Interval(
-                    id='slow-interval',
-                    interval=30 * 1000,  # in milliseconds
-                ),
-                dcc.Interval(
-                    id='really-slow-interval',
-                    interval=60 * 60 * 1000,  # in milliseconds
-                ),
-            ],
-            className="container",
+def intervals():
+    return [
+        dcc.Interval(
+            id='fast-interval',
+            interval=500,  # in milliseconds
+            n_intervals=0
+        ),
+        dcc.Interval(
+            id='slow-interval',
+            interval=30 * 1000,  # in milliseconds
+        ),
+        dcc.Interval(
+            id='really-slow-interval',
+            interval=60 * 60 * 1000,  # in milliseconds
         )
+    ]
+
+
+def create_app_layout(_config: HomeDashboardModel):
+    def regenerate_layout():
+        app_layout = generate_layout(_config.gui)
+        app_layout.children.extend(intervals())
+        return app_layout
+        # return html.Div(
+        #     children=[
+        #         html.Div(id='update-clock'),
+        #         grid.create_equal_row([
+        #             html.Div(id='update-bus'),
+        #             html.Div(id='update-train'),
+        #         ]),
+        #         grid.create_equal_row([
+        #             html.Div(id='update-birthdays'),
+        #             grid.create_equal_row([
+        #                 html.Div(id='update-weather'),
+        #                 wifi.generate_wifi_div(_config.wifi),
+        #             ]),
+        #         ]),
+        #         dcc.Interval(
+        #             id='fast-interval',
+        #             interval=500,  # in milliseconds
+        #             n_intervals=0
+        #         ),
+        #         dcc.Interval(
+        #             id='slow-interval',
+        #             interval=30 * 1000,  # in milliseconds
+        #         ),
+        #         dcc.Interval(
+        #             id='really-slow-interval',
+        #             interval=60 * 60 * 1000,  # in milliseconds
+        #         ),
+        #     ],
+        #     className="container",
+        # )
     return regenerate_layout
 
 

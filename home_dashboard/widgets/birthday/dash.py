@@ -1,6 +1,6 @@
 import dash_html_components as html
 
-from .config_model import BirthdayWidgetModel
+from .config_model import BirthdayWidgetModel, BirthdayModel
 
 from datetime import date
 
@@ -22,7 +22,7 @@ def days_to_next_date(target_date: date) -> int:
     return days_to_go
 
 
-def is_soon_enough(birthday: BirthdayWidgetModel) -> bool:
+def is_soon_enough(birthday: BirthdayModel) -> bool:
     return days_to_next_date(birthday.date) < MAX_DAYS_TO_BIRTHDAY
 
 
@@ -30,7 +30,7 @@ def generate_upcoming_birthdays_header():
     return html.H3(children='Upcoming Birthdays')
 
 
-def _generate_birthday_row(birthday: BirthdayWidgetModel):
+def _generate_birthday_row(birthday: BirthdayModel):
     is_today = days_to_next_date(birthday.date) == 0
 
     class_name = "table-default"
@@ -65,7 +65,7 @@ def generate_upcoming_birthdays_table(config: BirthdayWidgetModel):
     )
 
 
-def generate_upcoming_birthdays_div(config):
+def generate_upcoming_birthdays_div(config: BirthdayWidgetModel):
     return html.Div(
         children=[
             generate_upcoming_birthdays_header(),
