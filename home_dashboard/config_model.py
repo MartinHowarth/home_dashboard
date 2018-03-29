@@ -1,16 +1,18 @@
 from schematics.models import Model
-from schematics.types import ModelType
+from schematics.types import ModelType, URLType
 
-from home_dashboard.birthday.config_model import BirthdayWidget
-from home_dashboard.bus.config_model import BusWidget
-from home_dashboard.train.config_model import TrainWidget
-from home_dashboard.weather.config_model import WeatherWidget
-from home_dashboard.wifi.config_model import WifiWidget
+from home_dashboard.widgets.birthday.config_model import BirthdayWidgetModel
+from home_dashboard.widgets.bus.config_model import BusWidgetModel
+from home_dashboard.widgets.train.config_model import TrainWidgetModel
+from home_dashboard.widgets.weather.config_model import WeatherWidgetModel
+from home_dashboard.widgets.wifi.config_model import WifiWidgetModel
 
 
 class HomeDashboard(Model):
-    birthday = ModelType(BirthdayWidget)
-    bus = ModelType(BusWidget)
-    train = ModelType(TrainWidget)
-    weather = ModelType(WeatherWidget)
-    wifi = ModelType(WifiWidget)
+    birthday = ModelType(BirthdayWidgetModel)
+    bus = ModelType(BusWidgetModel)
+    train = ModelType(TrainWidgetModel)
+    weather = ModelType(WeatherWidgetModel)
+    wifi = ModelType(WifiWidgetModel)
+
+    css_cdn = URLType(default='https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/minty/bootstrap.min.css')

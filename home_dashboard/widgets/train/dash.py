@@ -1,7 +1,7 @@
 import dash_html_components as html
 
 from .api import get_station_board
-from .config_model import TrainWidget
+from .config_model import TrainWidgetModel
 
 
 def generate_train_departures_header(station_board):
@@ -38,7 +38,7 @@ def generate_train_departures_table(train_services):
     )
 
 
-def generate_train_departures_div(config: TrainWidget):
+def generate_train_departures_div(config: TrainWidgetModel):
     board = get_station_board(config.train_station_code, config.nre_api_key)
 
     train_services = board.train_services

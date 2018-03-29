@@ -1,11 +1,11 @@
 import base64
 import dash_html_components as html
 
-from .config_model import WifiWidget
+from .config_model import WifiWidgetModel
 from .api import QR_IMG_PATH
 
 
-def generate_wifi_div(config: WifiWidget):
+def generate_wifi_div(config: WifiWidgetModel):
     # Serve the local file by base64 encoding it.
     with open(QR_IMG_PATH, 'rb') as img:
         encoded_image = base64.b64encode(img.read())

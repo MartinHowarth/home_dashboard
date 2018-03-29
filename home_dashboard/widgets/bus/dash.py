@@ -1,7 +1,7 @@
 import dash_html_components as html
 
 from .api import get_bus_stop_live_arrivals_by_stop_code, get_bus_stop_name_by_stop_code
-from .config_model import BusWidget
+from .config_model import BusWidgetModel
 
 
 def generate_bus_arrivals_header(bus_stop_name):
@@ -37,7 +37,7 @@ def generate_bus_arrivals_table(config, arrivals):
     )
 
 
-def generate_bus_arrivals_div(config: BusWidget):
+def generate_bus_arrivals_div(config: BusWidgetModel):
     arrivals = get_bus_stop_live_arrivals_by_stop_code(config.bus_stop_code)
     bus_stop_name = get_bus_stop_name_by_stop_code(config.bus_stop_code)
 

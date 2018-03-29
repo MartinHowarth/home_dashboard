@@ -3,11 +3,10 @@ import pytz
 
 from datetime import datetime, timedelta
 
+from .config_model import WeatherWidgetModel
+
 
 RAIN_MM_THRESHOLD = 1
-RAIN_ICON_URL = "https://www.freeiconspng.com/uploads/weather-icon-png-19.png"
-SUN_ICON_URL = ("https://pre00.deviantart.net/1125/th/pre/i/2014/153/2/3/"
-                "praise_the_sun_solaire_chibi_by_james23x-d7krxjf.png")
 
 
 def filter_to_current_day(forecast_list):
@@ -29,11 +28,7 @@ def is_significant_rain(forecast_list):
     return rain_mm > RAIN_MM_THRESHOLD
 
 
-def get_icon_url(icon_code):
-    return "http://openweathermap.org/img/w/{}.png".format(icon_code)
-
-
-def get_weather_icon_url(config):
+def get_weather_icon_url(config: WeatherWidgetModel):
     r = requests.get('http://api.openweathermap.org/data/2.5/forecast?q={}&appid={}'
                      .format(config.location, config.open_weather_map_api_key))
     r.raise_for_status()
@@ -42,7 +37,7 @@ def get_weather_icon_url(config):
     forecast_list = filter_to_current_day(forecast_list)
 
     if is_significant_rain(forecast_list):
-        icon_url = RAIN_ICON_URL
+        icon_url = config.rainy_image_url
     else:
-        icon_url = SUN_ICON_URL
+        icon_url = config.sunny_image_url
     return icon_url

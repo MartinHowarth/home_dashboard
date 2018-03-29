@@ -11,12 +11,9 @@ import sys
 from dash.dependencies import Input, Output
 from flask import Flask
 
-from home_dashboard import bus, birthday, train, clock, weather, wifi, bootstrap
 from home_dashboard.config_model import HomeDashboard
-
-CSS_DICT = {
-    'minty': 'https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/minty/bootstrap.min.css'
-}
+from home_dashboard.html_toolkit import layouts
+from home_dashboard.widgets import weather, train, clock, bus, birthday, wifi
 
 
 log = logging.getLogger(__name__)
@@ -50,13 +47,13 @@ def create_app_layout(_config: HomeDashboard):
         return html.Div(
             children=[
                 html.Div(id='update-clock'),
-                bootstrap.layouts.create_equal_row([
+                layouts.create_equal_row([
                     html.Div(id='update-bus'),
                     html.Div(id='update-train'),
                 ]),
-                bootstrap.layouts.create_equal_row([
+                layouts.create_equal_row([
                     html.Div(id='update-birthdays'),
-                    bootstrap.layouts.create_equal_row([
+                    layouts.create_equal_row([
                         html.Div(id='update-weather'),
                         wifi.generate_wifi_div(_config.wifi),
                     ]),
@@ -139,8 +136,7 @@ try:
 except Exception as err:
     log.exception("Exception on initial updates: {}".format(err))
 
-# Use Minty CSS
-app.css.append_css({"external_url": CSS_DICT['minty']})
+app.css.append_css({"external_url": config.css_cdn})
 
 if __name__ == "__main__":
     configure_logging()

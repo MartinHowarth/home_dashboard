@@ -1,10 +1,10 @@
 import dash_html_components as html
 
-from .config_model import WeatherWidget
+from .config_model import WeatherWidgetModel
 from .api import get_weather_icon_url
 
 
-def generate_weather_div(config: WeatherWidget):
+def generate_weather_div(config: WeatherWidgetModel):
     return html.Div(
         children=[
             html.Img(

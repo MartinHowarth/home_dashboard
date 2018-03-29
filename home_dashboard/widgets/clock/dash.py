@@ -2,7 +2,7 @@ import dash_html_components as html
 import datetime
 import pytz
 
-from home_dashboard.bootstrap import layouts
+from home_dashboard.html_toolkit import layouts
 
 
 def generate_clock_div():
