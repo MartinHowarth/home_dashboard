@@ -2,6 +2,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import flask
 import importlib
 import json
 import logging
@@ -17,6 +18,9 @@ from home_dashboard.widgets import weather, train, clock, bus, birthday, wifi
 
 
 log = logging.getLogger(__name__)
+
+# TODO make this use package data to be more robust over refactoring
+JAVASCRIPT_DIR = os.path.join(os.getcwd(), 'javascript')
 
 
 def configure_logging():
@@ -46,7 +50,8 @@ def create_app_layout(_config: HomeDashboard):
     def regenerate_layout():
         return html.Div(
             children=[
-                html.Div(id='update-clock'),
+                clock.generate_clock_div(),
+                # html.Div(id='widget-clock'),
                 layouts.create_equal_row([
                     html.Div(id='update-bus'),
                     html.Div(id='update-train'),
@@ -88,10 +93,10 @@ def create_app_callbacks(_app, _config):
     def update_train_row(n):
         return [train.generate_train_departures_div(_config.train)]
 
-    @_app.callback(Output('update-clock', 'children'),
-                   [Input('fast-interval', 'n_intervals')])
-    def update_clock(n):
-        return [clock.generate_clock_div()]
+    # @_app.callback(Output('clock', 'children'),
+    #                [Input('fast-interval', 'n_intervals')])
+    # def update_clock(n):
+    #     return [clock.generate_clock_div()]
 
     @_app.callback(Output('update-birthdays', 'children'),
                    [Input('really-slow-interval', 'n_intervals')])
@@ -106,7 +111,7 @@ def create_app_callbacks(_app, _config):
     _all_updates = [
         update_birthdays,
         update_bus_row,
-        update_clock,
+        # update_clock,
         update_train_row,
         update_weather,
     ]
@@ -137,6 +142,21 @@ except Exception as err:
     log.exception("Exception on initial updates: {}".format(err))
 
 app.css.append_css({"external_url": config.css_cdn})
+
+# Add each script to the app from the JAVASCRIPT_DIR
+for script in os.listdir(JAVASCRIPT_DIR):
+    if os.path.splitext(script)[1] != '.js':
+        continue
+    app.scripts.append_script({
+        'external_url': '/static/{}'.format(script)
+    })
+
+
+# Use Flask to serve the javascript source files statically.
+@app.server.route('/static/<filename>.js')
+def serve_script(filename):
+    return flask.send_from_directory(JAVASCRIPT_DIR, '{}.js'.format(filename))
+
 
 if __name__ == "__main__":
     configure_logging()

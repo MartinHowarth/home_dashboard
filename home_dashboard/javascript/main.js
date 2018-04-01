@@ -1,0 +1,3 @@
+this.onload = function(){
+        startClock();
+    };
