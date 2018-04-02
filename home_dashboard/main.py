@@ -13,14 +13,12 @@ from dash.dependencies import Input, Output
 from flask import Flask
 
 from home_dashboard.config_model import HomeDashboard
+from home_dashboard.constants import JAVASCRIPT_DIR
 from home_dashboard.html_toolkit import layouts
 from home_dashboard.widgets import weather, train, clock, bus, birthday, wifi
 
 
 log = logging.getLogger(__name__)
-
-# TODO make this use package data to be more robust over refactoring
-JAVASCRIPT_DIR = os.path.join(os.getcwd(), 'javascript')
 
 
 def configure_logging():
