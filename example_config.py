@@ -18,6 +18,7 @@ config = {
         'walk_minutes_to_stop': 5,
         'run_minutes_to_stop': 2,
     },
+    'clock': {},
     'train': {
         # Register for an api key here: http://realtime.nationalrail.co.uk/OpenLDBWSRegistration/
         'nre_api_key': 'YOUR-KEY',
@@ -25,9 +26,15 @@ config = {
         'max_listings': 4,
     },
     'weather': {
-        'open_weather_map_api_key': '47e4af10b0f2e0e180830016297b2162',
+        # Register for an API key here: https://home.openweathermap.org/users/sign_up
+        'open_weather_map_api_key': 'YOUR-KEY',
         'location': 'Enfield,uk',
     },
+    'wifi': {
+        'auth_type': 'WPA',
+        'password': 'password',
+        'ssid': 'wifi_name'
+    }
 }
 
 

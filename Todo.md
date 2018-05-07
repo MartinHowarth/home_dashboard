@@ -7,5 +7,6 @@
     - Bank holidays
 
 - Allow config-specified layout
+    - This should also allow multiple widgets of the same type - the `id` system should already allow for this (untested)
 
 - Allow repeats of the same widget (with independent config)
