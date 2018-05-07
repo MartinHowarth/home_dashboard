@@ -1,1 +1,1 @@
-from .dash import generate_clock_div
+from .dash import ClockWidget

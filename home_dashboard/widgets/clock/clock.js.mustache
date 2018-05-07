@@ -1,9 +1,4 @@
-function startClock{{clockID}}() {
-    // Wait until the clock element has loaded.
-    if (document.getElementById('{{clockTimeElementID}}') == null) {
-        var t = setTimeout(startClock{{clockID}}, 50);
-        return;
-    }
+function {{loopName}}() {
     var today = new Date();
     var day = today.getDate();
     var month = today.toLocaleString('en-gb', { month: "long" });
@@ -15,7 +10,7 @@ function startClock{{clockID}}() {
     seconds = padInt(seconds);
     document.getElementById('{{clockTimeElementID}}').innerHTML = hours + ":" + minutes + ":" + seconds;
     document.getElementById('{{clockDateElementID}}').innerHTML = day + " " + month + " " + year;
-    var t = setTimeout(startClock{{clockID}}, 500);
+    var t = setTimeout({{loopName}}, 500);
 }
 
 function padInt(i) {
