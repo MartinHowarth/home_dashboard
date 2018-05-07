@@ -1,0 +1,14 @@
+function startLoops() {
+    // Wait until the main element has loaded.
+    if (document.getElementById('main') == null) {
+        var t = setTimeout(startLoops, 50);
+        return;
+    }
+    {{#initial-functions}}
+    {{function-name}}();
+    {{/initial-functions}}
+}
+
+this.onload = function(){
+        startLoops();
+    };

@@ -43,6 +43,7 @@ setup(
         'munch',
         'nre-darwin-py',
         'plotly',
+        'pystache',
         'requests',
         'schematics',
         'wifi-qrcode-generator',

@@ -1,7 +1,10 @@
+- Add "vistor book"
+    - fade between different quotes
+    - QR for users to submit a quote?
+
 - Auto populate special public dates
     - Mothers/Fathers day
     - Bank holidays
-- Embed the clock instead of polling all the time
 
 - Allow config-specified layout
 
