@@ -5,6 +5,7 @@ from home_dashboard.widgets.birthday.config_model import BirthdayWidgetModel
 from home_dashboard.widgets.bus.config_model import BusWidgetModel
 from home_dashboard.widgets.clock.config_model import ClockWidgetModel
 from home_dashboard.widgets.train.config_model import TrainWidgetModel
+from home_dashboard.widgets.visitor_book.config_model import VisitorBookWidgetModel
 from home_dashboard.widgets.weather.config_model import WeatherWidgetModel
 from home_dashboard.widgets.wifi.config_model import WifiWidgetModel
 
@@ -15,6 +16,7 @@ class HomeDashboard(Model):
     clock = ModelType(ClockWidgetModel)
     train = ModelType(TrainWidgetModel)
     weather = ModelType(WeatherWidgetModel)
+    visitor_book = ModelType(VisitorBookWidgetModel)
     wifi = ModelType(WifiWidgetModel)
 
     css_cdn = URLType(default='https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0/minty/bootstrap.min.css')

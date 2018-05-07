@@ -12,11 +12,14 @@ def generate_wifi_div(config: WifiWidgetModel):
 
     return html.Div(
         children=[
+            html.H4(
+                "Wifi!",
+                className="text-center"
+            ),
             html.Img(
                 src='data:image/png;base64,{}'.format(encoded_image.decode()),
-                style={'display': 'block',
-                       'width': '100%',
-                       'vertical-align': 'middle'}
+                className='d-block align-top mx-auto mb-5',
+                style={'width': '100%'}
             ),
         ],
     )

@@ -1,4 +1,37 @@
 import dash_html_components as html
+from typing import List  # NOQA
+
+
+class GridElement:
+    def __init__(self, element, width):
+        """
+
+        'width' must be valid according to the layout system here:
+            https://www.w3schools.com/bootstrap/bootstrap_grid_system.asp
+
+        :param element:
+        :param width:
+        """
+        self.element = element
+        self.width = width
+
+
+def create_weighted_row(elements: List[GridElement]):
+    # Bootstrap allows a maximum of 12 columns per grid.
+    row_children = []
+    for grid_elem in elements:
+        elem = grid_elem.element
+        elem_class = 'col-sm-{}'.format(grid_elem.width)
+        if hasattr(elem, 'className'):
+            elem.className += ' {}'.format(elem_class)
+        else:
+            elem.className = elem_class
+        row_children.append(elem)
+
+    return html.Div(
+        children=row_children,
+        className='row',
+    )
 
 
 def create_equal_grid(elements):

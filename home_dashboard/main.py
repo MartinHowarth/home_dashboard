@@ -16,7 +16,7 @@ from flask import Flask
 from home_dashboard.config_model import HomeDashboard
 from home_dashboard.constants import JAVASCRIPT_DIR, MAIN_JS_TEMPLATE
 from home_dashboard.html_toolkit import layouts
-from home_dashboard.widgets import weather, train, bus, birthday, wifi
+from home_dashboard.widgets import weather, train, bus, birthday, wifi, visitor_book
 from home_dashboard.widgets.base import render_javascript_template
 from home_dashboard.widgets.clock import ClockWidget
 
@@ -77,6 +77,7 @@ def create_app_layout(_config: HomeDashboard):
                     html.Div(id='update-bus'),
                     html.Div(id='update-train'),
                 ]),
+                html.Div(id='update-visitor-book', className="container"),
                 layouts.create_equal_row([
                     html.Div(id='update-birthdays'),
                     layouts.create_equal_row([
@@ -87,6 +88,10 @@ def create_app_layout(_config: HomeDashboard):
                 dcc.Interval(
                     id='30sec-interval',
                     interval=30 * 1000,  # in milliseconds
+                ),
+                dcc.Interval(
+                    id='5minute-interval',
+                    interval=5 * 60 * 1000,  # in milliseconds
                 ),
                 dcc.Interval(
                     id='1hour-interval',
@@ -110,6 +115,11 @@ def create_app_callbacks(_app, _config):
     def update_train_row(n):
         return [train.generate_train_departures_div(_config.train)]
 
+    @_app.callback(Output('update-visitor-book', 'children'),
+                   [Input('5minute-interval', 'n_intervals')])
+    def update_visitor_book(n):
+        return [visitor_book.VisitorBookWidget(_config.visitor_book).html_div]
+
     @_app.callback(Output('update-birthdays', 'children'),
                    [Input('1hour-interval', 'n_intervals')])
     def update_birthdays(n):
@@ -124,6 +134,7 @@ def create_app_callbacks(_app, _config):
         update_birthdays,
         update_bus_row,
         update_train_row,
+        update_visitor_book,
         update_weather,
     ]
     return _all_updates
